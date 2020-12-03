@@ -1,0 +1,8 @@
+.vscode/*
+*pycache*
+*.ipynb
+*Testing/*
+*/Testing*
+*node_modules*
+UI/node_modules/*
+UI/node_modules
