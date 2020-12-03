@@ -1,0 +1,104 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.chess.board.grid {
+  width: 87.5px;
+  height: 87.5px;
+}
+
+.chess.board.grid.poopTile {
+  z-index: 1;
+  background-color: #b58863;
+}
+
+.chess.board.grid.whiteTile {
+  z-index: 1;
+  background-color: #f0d9b5;
+}
+
+.eight.wide.column.chess.board.whole.grid {
+  width: 700px !important;
+}
+
+.DRAGGINGCHESSPIECE {
+  z-index: 1000 !important;
+  position: relative !important;
+  cursor: grabbing !important;
+}
+
+.dragging.dark.tile {
+  background-color: #b58863;
+  z-index: 1000;
+}
+
+.dragging.light.tile {
+  background-color: #f0d9b5;
+  z-index: 1000;
+}
+
+.menu.padder {
+  padding-bottom: 10px;
+}
+.chess.piece {
+  height: 100%;
+  width: 100%;
+}
+
+.checkmark {
+  align-self: flex-start;
+  position: relative;
+  top: 50%;
+}
+
+.dimmer { 
+  background-color: rgba(250,250,50,0)!important;
+  text-shadow: none;
+  box-shadow: none;
+}
+
+.checkboxheader {
+  border-bottom: none !important;
+  font-size: 80px !important;
+}
+
+.xboxheader {
+  border-bottom: none !important;
+  font-size: 80px !important;
+  
+}
