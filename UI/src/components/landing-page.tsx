@@ -582,6 +582,9 @@ export class ChessBoardLandingPage extends React.Component<IProps, IState> {
         this.setState({keepPlaying: true})
     }
     async startGame(event: MouseEvent) {
+        if(this.state.currentFen === "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"){
+            this.setState({toMoveColour: "white"})
+        }
         this.setState({keepPlaying: true})
         console.log("Starting game");
 

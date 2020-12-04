@@ -29,11 +29,15 @@ def getStringArray(aBoard):
 @app.route('/makeEngineMove',  methods=['GET', 'POST'])
 @cross_origin(origin='localhost')
 def example_func():
+
+    print(request.args)
     theFen = request.args.get('FEN')
     engineDepth = (int)(request.args.get("EngineDepth"))
 
     materialEvalStr = (request.args.get("MaterialEval"))
     movesEvalStr = (request.args.get("MovesEval"))
+
+    print("material eval stR: ", materialEvalStr, "movesEval str: ", movesEvalStr)
 
     materialEval = True
     if(materialEvalStr == "false"):

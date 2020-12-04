@@ -78,7 +78,7 @@ def makeAMove(aBoard, evaluationDict, weightDict, depth):
         whiteToMove=False
 
     print("Calling minMaxMove with params: ")
-    print("whiteToMove: ", whiteToMove, " evaluationDict: ", evaluationDict, "weight dict", weightDict)
+    print("whiteToMove: ", whiteToMove, " evaluationDict: ", evaluationDict, "weight dict", weightDict, "depth: ", depth)
     currentEval, theMove = minMaxMove(aBoard, whiteToMove, evaluationDict, -10000000, 10000000, weightDict, depth=depth)
 
 

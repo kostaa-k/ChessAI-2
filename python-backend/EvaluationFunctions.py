@@ -42,6 +42,8 @@ def getEvaluation(aBoard, evaluationDict, weightDict):
             return 10000
     elif(aBoard.is_game_over(claim_draw=True)):
         return 0
+    elif(aBoard.is_stalemate() == True):
+        return 0
     
     totalScore = 0
     for key, value in evaluationDict.items():
