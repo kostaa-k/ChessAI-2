@@ -7,7 +7,7 @@ from random import shuffle
 
 
 def minMaxMove(aBoard, maximizingPlayer, evaluationDict, alpha, beta, weightDict, depth=3):
-    if (depth == 0 or aBoard.is_checkmate()):
+    if (depth == 0 or aBoard.is_checkmate() or aBoard.is_stalemate()):
         return EvaluationFunctions.getEvaluation(aBoard, evaluationDict, weightDict), None
     elif(maximizingPlayer == True):
         maxEval = -1000000

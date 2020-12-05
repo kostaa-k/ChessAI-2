@@ -37,9 +37,9 @@ def getPossibleMoveNums(theBoard, pieceScores):
 def getEvaluation(aBoard, evaluationDict, weightDict):
     if(aBoard.is_checkmate()):
         if(aBoard.turn == chess.WHITE):
-            return -10000
+            return -100000
         else:
-            return 10000
+            return 100000
     elif(aBoard.is_game_over(claim_draw=True)):
         return 0
     elif(aBoard.is_stalemate() == True):
