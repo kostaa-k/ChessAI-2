@@ -5,46 +5,82 @@ from copy import deepcopy
 import time
 from random import shuffle
 
+'''
+MiniMax Function -> Implemented from slides
 
-def minMaxMove(aBoard, maximizingPlayer, evaluationDict, alpha, beta, weightDict, depth=3):
+INPUTS:
+    aBoard -> python-chess Board() Object containing the current board
+    maximizingPlayer -> True if it is white's move, false if black's move
+    evaluationDict -> Dictionary containing the evaluation functions to score each board
+    alpha -> max Value we are looking for to prune tree
+    beta -> min Value we are looking for to prune tree
+    weightDict -> Dictionary of weights to combine with evaluation scores
+    depth -> Integer of search depth we want to look before recursing up
+
+OUTPUTS:
+
+'''
+
+
+def minMaxMove(aBoard, maximizingPlayer, evaluationDict, alpha, beta, weightDict, depth=3, nodesReached=0):
+
+    #Base Case
+    #Check if depth has been reached - or other stopping criteria
     if (depth == 0 or aBoard.is_checkmate() or aBoard.is_stalemate()):
-        return EvaluationFunctions.getEvaluation(aBoard, evaluationDict, weightDict), None
+        nodesReached+=1
+        return EvaluationFunctions.getEvaluation(aBoard, evaluationDict, weightDict), None, nodesReached
+    
+    #when its white's move
     elif(maximizingPlayer == True):
+        #initialize vars
         maxEval = -1000000
         maxMove = None
         listOfMoves = list(aBoard.legal_moves)
+        #Shuffle legal moves (for more randomness in games)
         shuffle(listOfMoves)
         for move in listOfMoves:
             aBoard.push(move)
-            theEval, theMove = minMaxMove(aBoard, False, evaluationDict, alpha, beta, weightDict, depth=depth-1)
-            #print(theEval, move, depth, "Maximizing")
+
+            #Recursive call on potential move - next being black's move
+            theEval, theMove, nodesReached = minMaxMove(aBoard, False, evaluationDict, alpha, beta, weightDict, depth=depth-1, nodesReached=nodesReached+1)
             aBoard.pop()
+
+            #Find max evaluation
             if(theEval >= maxEval):
                 maxEval = theEval
                 maxMove = move
+
+            #Get alpha value - should we prune this subtree?
             alpha = max(alpha, theEval)
             if(alpha > beta):
                 break
-        return maxEval, maxMove
+        return maxEval, maxMove, nodesReached
+
+    #If its black's move
     elif(maximizingPlayer == False):
+        #initialize vars
         minEval = 100000
         minMove = None
         listOfMoves = list(aBoard.legal_moves)
+        #Shuffle legal moves (for more randomness in games)
         shuffle(listOfMoves)
         for move in listOfMoves:
             aBoard.push(move)
-            theEval, theMove = minMaxMove(aBoard, True, evaluationDict, alpha, beta, weightDict, depth=depth-1)
-            #print(theEval, move, depth, "Minimizing")
+
+            #Recursive call on potential move - next being white's move
+            theEval, theMove, nodesReached = minMaxMove(aBoard, True, evaluationDict, alpha, beta, weightDict, depth=depth-1, nodesReached=nodesReached+1)
             aBoard.pop()
+
             if(theEval <= minEval):
                 minEval = theEval
                 minMove = move
-                
+
+            #Get beta value - should we prune this subtree?    
             beta = min(beta, theEval)
             if(beta < alpha):
-                #print("Breaking because move: ", move, alpha, beta)
                 break
-        return minEval, minMove
+
+        return minEval, minMove, nodesReached
 
 
 def getEvaluationDictionary(toEvaluateMaterial, toEvaluatePossibleMoves):
@@ -77,9 +113,9 @@ def makeAMove(aBoard, evaluationDict, weightDict, depth):
     if(aBoard.turn == chess.BLACK):
         whiteToMove=False
 
-    print("Calling minMaxMove with params: ")
-    print("whiteToMove: ", whiteToMove, " evaluationDict: ", evaluationDict, "weight dict", weightDict, "depth: ", depth)
-    currentEval, theMove = minMaxMove(aBoard, whiteToMove, evaluationDict, -10000000, 10000000, weightDict, depth=depth)
+    #print("Calling minMaxMove with params: ")
+    #print("whiteToMove: ", whiteToMove, " evaluationDict: ", evaluationDict, "weight dict", weightDict, "depth: ", depth)
+    currentEval, theMove, nodesReached = minMaxMove(aBoard, whiteToMove, evaluationDict, -10000000, 10000000, weightDict, depth=depth)
 
 
-    return currentEval, theMove
+    return currentEval, theMove, nodesReached

@@ -30,14 +30,13 @@ def getStringArray(aBoard):
 @cross_origin(origin='localhost')
 def example_func():
 
-    print(request.args)
     theFen = request.args.get('FEN')
     engineDepth = (int)(request.args.get("EngineDepth"))
 
     materialEvalStr = (request.args.get("MaterialEval"))
     movesEvalStr = (request.args.get("MovesEval"))
 
-    print("material eval stR: ", materialEvalStr, "movesEval str: ", movesEvalStr)
+    #print("material eval stR: ", materialEvalStr, "movesEval str: ", movesEvalStr)
 
     materialEval = True
     if(materialEvalStr == "false"):
@@ -48,17 +47,18 @@ def example_func():
         movesEval=False
 
 
-    print("fen: ", theFen)
+    #print("fen: ", theFen)
     print("Engine depth: ", engineDepth)
 
-    print("Matieral and moves eval", materialEval, movesEval)
+    print("Matieral eval:", materialEval, "Moves eval:", movesEval)
 
     board = chess.Board(fen=theFen)
 
     evalDict = chessFunctions.getEvaluationDictionary(materialEval, movesEval)
     weightDict = chessFunctions.getWeightDictionary()
 
-    theEval, theMove = chessFunctions.makeAMove(board, evalDict, weightDict, engineDepth)
+    startTime = time.time()
+    theEval, theMove, nodesReached = chessFunctions.makeAMove(board, evalDict, weightDict, engineDepth)
 
 
     returnDict = {}
@@ -67,8 +67,18 @@ def example_func():
     newBoardArray = getStringArray(board)
     returnDict["newBoard"] = newBoardArray
 
-    print(theMove)
+    endTime = time.time()
+    elapsedTime = (endTime-startTime)
+
+    print()
+    print("Move is: ", theMove)
     print(board)
+    print()
+    print("Elapsed Time: ", round(elapsedTime, 2), "seconds")
+    print("Nodes Reached: ", nodesReached)
+    print()
+    print()
+
     return returnDict
 
 
