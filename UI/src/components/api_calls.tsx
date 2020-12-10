@@ -37,6 +37,22 @@ export async function checkPoll (sessionId?: string) {
 
 }
 
+
+export async function getBoardString(fen: string) : Promise<MoveMade>{
+
+
+    const urlEndpoint = `http://127.0.0.1:5000/SetBoard?FEN=${fen}`;
+
+    const answer = await (axios.get(urlEndpoint));
+
+    console.log("Got answer: ", answer);
+    const boardAnswer = answer["data"];
+
+    return boardAnswer;
+}   
+
+
+
 export async function makeMove(fen: string, move_uci: string) : Promise<MoveMade>{
 
     console.log(move_uci);
@@ -79,3 +95,19 @@ export async function makeEngineMove(fen: string, colourToMove: string, engineDe
     return boardAnswer;
 }
 
+
+export async function makePuzzleMove(fen: string, engineDepth: number): Promise<MoveMade>{
+
+    console.log("Getting move");
+
+    const urlEndpoint = `http://127.0.0.1:5000/SolvePuzzle?FEN=${fen}&EngineDepth=${engineDepth}`;
+
+    console.log(urlEndpoint);
+
+    const dataBack = await (axios.get(urlEndpoint));
+    const boardAnswer = dataBack["data"];
+
+    console.log(boardAnswer);
+
+    return boardAnswer;
+}

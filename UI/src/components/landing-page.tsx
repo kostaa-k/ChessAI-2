@@ -2,7 +2,7 @@ import React, { Component, MouseEvent, Props, ChangeEvent} from 'react';
 // import Board from './../board/board-component';
 import Draggable, {DraggableEvent, DraggableData} from 'react-draggable';
 import Buttons from '../components/buttons-component';
-import { Button, Grid, Container, Header, Checkbox, Form, Radio, CheckboxProps, Image, Progress, Card, Divider, Transition} from 'semantic-ui-react'
+import { Button, Grid, Container, Header, Checkbox, Form, Radio, CheckboxProps, Image, Input, Card, Divider, Transition} from 'semantic-ui-react'
 import CSS from 'csstype';
 import { Link } from 'react-router-dom'
 
@@ -18,12 +18,11 @@ import WhiteRook from '../pieces/white_rook.png';
 import WhiteKing from '../pieces/white_king.png';
 import WhiteQueen from '../pieces/white_queen.png';
 import WhitePawn from '../pieces/white_pawn.png';
-import { getMistakes, MistakeObject, checkPoll, makeMove, MoveMade, getSessionId, makeEngineMove } from './api_calls';
+import { getMistakes, MistakeObject, checkPoll, makeMove, MoveMade, getSessionId, makePuzzleMove, makeEngineMove, getBoardString } from './api_calls';
 import MistakesTable from './MistakesTable';
 import { Label } from 'semantic-ui-react';
 import { Menu } from 'semantic-ui-react';
 import { Icon } from 'semantic-ui-react';
-import { isFunction } from 'util';
 import greenCheckMark from '../images/greenCheck.png'
 
 
@@ -116,6 +115,7 @@ interface IState {
 }
 
 let current_user: String;
+let puzzleFen: string;
 let blackEngineDepth: number = 1;
 let whiteEngineDepth: number = 1;
 let numOfGames: number = 1;
@@ -206,7 +206,16 @@ export class ChessBoardLandingPage extends React.Component<IProps, IState> {
 
         this.resetkeepPlayingState = this.resetkeepPlayingState.bind(this);
 
+        this.setUpABoard = this.setUpABoard.bind(this);
+
+        this.onChangeFen = this.onChangeFen.bind(this);
+
         this.setState({canMove: false})
+
+        this.solvePuzzle = this.solvePuzzle.bind(this);
+
+        this.puzzleMove = this.puzzleMove.bind(this);
+
     }
 
     componentDidMount() {
@@ -342,6 +351,11 @@ export class ChessBoardLandingPage extends React.Component<IProps, IState> {
     _onChange = (e: React.FormEvent<HTMLInputElement>) => {
         const newValue = e.currentTarget.value;
         current_user = newValue
+    }
+
+    onChangeFen = (e: React.FormEvent<HTMLInputElement>) => {
+        const newValue = e.currentTarget.value;
+        puzzleFen = newValue
     }
 
     async handleClick(event: MouseEvent) {
@@ -635,6 +649,37 @@ export class ChessBoardLandingPage extends React.Component<IProps, IState> {
 
     }
 
+    async puzzleMove(wantedDepth: number) {
+        newBoardSetup = await makePuzzleMove(this.state.currentFen, wantedDepth);
+        this.setNewBoard(newBoardSetup);
+        await this.delay(1000);
+    }
+
+    async solvePuzzle() {
+        this.setState({keepPlaying: true}) 
+        let thisDepth: number = 5;
+        await this.resetkeepPlayingState();
+        console.log(this.state.keepPlaying, this.state.isGameOver);
+        while(this.state.keepPlaying === true && this.state.isGameOver === false){
+            await this.puzzleMove(thisDepth);
+            thisDepth = thisDepth-1;
+        }
+    }
+
+
+    async setUpABoard(event: MouseEvent) {
+        console.log("Setting board");
+        console.log(puzzleFen);
+
+        newBoardSetup = await getBoardString(puzzleFen);
+
+
+        this.setNewBoard(newBoardSetup);
+        this.setState({
+            currentFen: puzzleFen
+        })
+    }
+
 
     render() {
         //const engineDepth = this.state.engineDepth;
@@ -650,6 +695,31 @@ export class ChessBoardLandingPage extends React.Component<IProps, IState> {
                 <Grid stackable>
                     <Grid.Row style={{height:totalBoardSizeStr}}>
                         <Grid.Column width={4}>
+                        <Card style={{position: 'relative', paddingLeft: '5px', paddingTop: '5px', paddingRight: '5px', backgroundColor: '#fafafa'}}>
+                                <Grid.Row>
+                                    <Divider horizontal>
+                                        <Header as='h4'>
+                                            Import a Puzzle!
+                                        </Header>
+
+                                        <Header as='h5'>Puzzle FEN:</Header>
+                                        <Input style={{width: '90%'}} onChange={this.onChangeFen}></Input>
+                                        <Header as='h4'> </Header>
+                                        <Button style={{width:"100%"}} basic color='black' onClick={this.setUpABoard} content='Import FEN' />
+                                    </Divider>
+                                    
+                                </Grid.Row>
+                                <Grid.Row>
+                                    <Divider horizontal>
+                                        <Header as='h4'>
+                                             
+                                        </Header>
+                                    </Divider>
+                                    <Button style={{width:"100%"}} basic color='black' onClick={this.solvePuzzle} content='Play Puzzle' />
+                        
+                                </Grid.Row> 
+                            </Card>
+
                         
                         </Grid.Column>
 

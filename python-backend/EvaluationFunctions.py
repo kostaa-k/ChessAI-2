@@ -1,6 +1,12 @@
 import chess
 
 
+
+'''
+
+Definitions of current pieces scores -> returns a dictionary
+
+'''
 def getPieceScores():
     pieceScores = {}
     pieceScores[chess.PAWN] = 10
@@ -11,6 +17,14 @@ def getPieceScores():
     pieceScores[chess.KING] = 900
 
     return pieceScores
+
+
+'''
+
+getMaterialScore Evaluation function
+returns evaluation score for a board given dictionary of piece scores
+
+'''
 
 def getMaterialScore(theBoard, pieceScores):
     baseBoard = chess.BaseBoard(board_fen=theBoard.board_fen())
@@ -51,3 +65,28 @@ def getEvaluation(aBoard, evaluationDict, weightDict):
         totalScore = totalScore+tempScore
     
     return totalScore
+
+
+def getEvaluationFlexibility(aBoard):
+    if(aBoard.is_checkmate()):
+        if(aBoard.turn == chess.WHITE):
+            return -100000
+        else:
+            return 100000
+    elif(aBoard.is_game_over(claim_draw=True)):
+        return 0
+    elif(aBoard.is_stalemate() == True):
+        return 0
+
+    
+    return getPossibleMoveNums(aBoard, {})
+
+
+def getCheckMateBoolean(aBoard):
+    if(aBoard.is_checkmate()):
+        if(aBoard.turn == chess.WHITE):
+            return -100000
+        else:
+            return 100000
+
+    return 0

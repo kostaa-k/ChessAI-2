@@ -21,6 +21,13 @@ cors = CORS(app)
 
 numOfGames = 0
 
+'''
+
+Function to get the correct return type for the front end to set the board
+
+
+'''
+
 def getStringArray(aBoard):
     boardArray = []
     for key in aBoard.piece_map():
@@ -28,6 +35,13 @@ def getStringArray(aBoard):
 
     return boardArray
 
+'''
+
+Make Engine Move Endpoint
+
+- Needs FEN, EngineDepth, MaterialEval, and MovesEval as Arguments
+
+'''
 
 @app.route('/makeEngineMove',  methods=['GET', 'POST'])
 @cross_origin(origin='localhost')
@@ -96,8 +110,66 @@ def example_func():
         return returnDict
 
 
+'''
+Set Board Endpoint
+
+-> Just needs FEN as arguments
+
+'''
 
 
+@app.route('/SetBoard',  methods=['GET', 'POST'])
+@cross_origin(origin='localhost')
+def getBoardStrBack():
+    theFen = request.args.get('FEN')
+    print("FEN:", theFen)
+
+    board = chess.Board(fen=theFen)
+    returnDict = {}
+    returnDict["FEN"] = (str)(board.fen())
+    newBoardArray = getStringArray(board)
+    returnDict["newBoard"] = newBoardArray
+    return returnDict
+
+
+'''
+
+Solve Puzzle Endpoint
+-> Just needs the FEN as argument
+
+'''
+
+@app.route('/SolvePuzzle',  methods=['GET', 'POST'])
+@cross_origin(origin='localhost')
+def solvePuzzle():
+    theFen = request.args.get('FEN')
+    print("FEN:", theFen)
+
+    engineDepth = (int)(request.args.get("EngineDepth"))
+    print("Engine Depth:", engineDepth)
+
+    board = chess.Board(fen=theFen)
+
+    isCheckMate, theMove = chessFunctions.getCheckMate(board)
+
+    returnDict = {}
+    if(isCheckMate == True):
+        board.push(theMove)
+        returnDict["FEN"] = (str)(board.fen())
+        newBoardArray = getStringArray(board)
+        returnDict["newBoard"] = newBoardArray
+        print("Found checkmate")
+        return returnDict
+
+    theEval, theMove, nodesReached = chessFunctions.makePuzzleMove(board, engineDepth)
+    
+    board.push(theMove)
+    returnDict["FEN"] = (str)(board.fen())
+    newBoardArray = getStringArray(board)
+    returnDict["newBoard"] = newBoardArray
+    
+    
+    return returnDict
 
 
 if __name__ == '__main__':
