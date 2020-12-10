@@ -855,7 +855,7 @@ export class ChessBoardLandingPage extends React.Component<IProps, IState> {
                                             
                                         </Header>
                                     </Divider>
-                                    <Button style={{width:"100%"}} basic color='black' onClick={this.solvePuzzle} content='Play Puzzle' />
+                                    <Button style={{width:"100%"}} basic color='black' onClick={this.solvePuzzle} content='Solve Puzzle' />
                         
                                 </Grid.Row> 
                             </Card>
