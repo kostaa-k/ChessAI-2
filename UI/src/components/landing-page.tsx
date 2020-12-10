@@ -601,19 +601,24 @@ export class ChessBoardLandingPage extends React.Component<IProps, IState> {
         this.setState({keepPlaying: true})
     }
     async startGame(event: MouseEvent) {
-        if(this.state.currentFen === "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"){
-            this.setState({toMoveColour: "white"})
+        if(this.state.whiteMaterialEval === false && this.state.whiteLegalMovesEval === false){
+            alert("Need to select at least one evaluation function for each AI")
         }
-        this.setState({keepPlaying: true})
-        console.log("Starting game");
-
-
-        console.log(this.state.keepPlaying, this.state.isGameOver);
-
-        await this.resetkeepPlayingState();
-        console.log(this.state.keepPlaying, this.state.isGameOver);
-        while(this.state.keepPlaying === true && this.state.isGameOver === false){
-            await this.makeAMove();
+        else{
+            if(this.state.currentFen === "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"){
+                this.setState({toMoveColour: "white"})
+            }
+            this.setState({keepPlaying: true})
+            console.log("Starting game");
+    
+    
+            console.log(this.state.keepPlaying, this.state.isGameOver);
+    
+            await this.resetkeepPlayingState();
+            console.log(this.state.keepPlaying, this.state.isGameOver);
+            while(this.state.keepPlaying === true && this.state.isGameOver === false){
+                await this.makeAMove();
+            } 
         }
     }
 
@@ -714,11 +719,11 @@ export class ChessBoardLandingPage extends React.Component<IProps, IState> {
                         <Grid.Column width={4}>
                         <Menu pointing style={{width: '250px'}}>
                             <Menu.Item
-                            name='Game Simulation'
+                            name='Game Simulator'
                             active={showGame === true}
                             onClick={this.handleGameTabClick}
                             >
-                            Game Simulation
+                            Game Simulator
                             </Menu.Item>
 
                             <Menu.Item
@@ -734,7 +739,7 @@ export class ChessBoardLandingPage extends React.Component<IProps, IState> {
                                 <Grid.Row>
                                     <Divider horizontal>
                                     <Header as='h2'>
-                                            Game Simulation
+                                            Game Simulator
                                         </Header>
                                         <Header as='h4'>
                                             White Player AI Settings
