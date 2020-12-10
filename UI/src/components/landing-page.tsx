@@ -2,7 +2,7 @@ import React, { Component, MouseEvent, Props, ChangeEvent} from 'react';
 // import Board from './../board/board-component';
 import Draggable, {DraggableEvent, DraggableData} from 'react-draggable';
 import Buttons from '../components/buttons-component';
-import { Button, Grid, Container, Header, Checkbox, Form, Radio, CheckboxProps, Image, Input, Card, Divider, Transition} from 'semantic-ui-react'
+import { Button, Grid, Container, Header, Checkbox, Form, Radio, CheckboxProps, Image, Input, Card, Divider, Transition, Visibility} from 'semantic-ui-react'
 import CSS from 'csstype';
 import { Link } from 'react-router-dom'
 
@@ -112,6 +112,7 @@ interface IState {
   toMoveColour: string;
   keepPlaying: boolean;
   isGameOver: boolean;
+  showGameSimulation: boolean;
 }
 
 let current_user: String;
@@ -168,7 +169,8 @@ export class ChessBoardLandingPage extends React.Component<IProps, IState> {
             whiteLegalMovesEval: false,
             toMoveColour: "white",
             keepPlaying: true,
-            isGameOver: false
+            isGameOver: false,
+            showGameSimulation: false
         };
         this.handleClick =  this.handleClick.bind(this);
         this.playMistake =  this.playMistake.bind(this);
@@ -216,6 +218,9 @@ export class ChessBoardLandingPage extends React.Component<IProps, IState> {
 
         this.puzzleMove = this.puzzleMove.bind(this);
 
+        this.handlePuzzleTabClick = this.handlePuzzleTabClick.bind(this);
+
+        this.handleGameTabClick = this.handleGameTabClick.bind(this);
     }
 
     componentDidMount() {
@@ -680,6 +685,16 @@ export class ChessBoardLandingPage extends React.Component<IProps, IState> {
         })
     }
 
+    async handleGameTabClick(event: MouseEvent){
+        console.log("Going to show game simulation");
+        this.setState({showGameSimulation: true});
+    }
+
+    async handlePuzzleTabClick(event: MouseEvent){
+        console.log("Going to show puzzle");
+        this.setState({showGameSimulation: false});
+    }
+
 
     render() {
         //const engineDepth = this.state.engineDepth;
@@ -688,6 +703,8 @@ export class ChessBoardLandingPage extends React.Component<IProps, IState> {
         //console.log("rendering")
         setup();
 
+        const showGame = this.state.showGameSimulation;
+
         const all_tiles = this.get_tiles();
         const pieceTiles = this.getPiecePosition();
         return(
@@ -695,46 +712,25 @@ export class ChessBoardLandingPage extends React.Component<IProps, IState> {
                 <Grid stackable>
                     <Grid.Row style={{height:totalBoardSizeStr}}>
                         <Grid.Column width={4}>
-                        <Card style={{position: 'relative', paddingLeft: '5px', paddingTop: '5px', paddingRight: '5px', backgroundColor: '#8edec3', opacity: 0.7}}>
-                                <Grid.Row>
-                                    <Divider horizontal>
-                                        <Header as='h2'>
-                                            Puzzle Solver
-                                        </Header>
+                        <Menu pointing style={{width: '250px'}}>
+                            <Menu.Item
+                            name='Game Simulation'
+                            active={showGame === true}
+                            onClick={this.handleGameTabClick}
+                            >
+                            Game Simulation
+                            </Menu.Item>
 
-                                        <Header as='h5'>
-                                            *Solves up to CheckMate in 3 Puzzles*
-                                        </Header>
-
-                                        <Header as='h5'>Puzzle FEN:</Header>
-                                        <Input style={{width: '90%'}} onChange={this.onChangeFen}></Input>
-                                        <Header as='h4'> </Header>
-                                        <Button style={{width:"100%", backgroundColor: '#ffffff'}} basic color='black' onClick={this.setUpABoard} content='Import FEN' />
-                                    </Divider>
-                                    
-                                </Grid.Row>
-                                <Grid.Row>
-                                    <Divider horizontal>
-                                        <Header as='h4'>
-                                             
-                                        </Header>
-                                    </Divider>
-                                    <Button style={{width:"100%"}} basic color='black' onClick={this.solvePuzzle} content='Play Puzzle' />
-                        
-                                </Grid.Row> 
-                            </Card>
-
-                        
-                        </Grid.Column>
-
-                        <Grid.Column className="chess board whole grid" width={8} style={{height:totalBoardSizeStr, width: totalBoardSizeStr} } >
-                            <Grid>
-                                {pieceTiles}
-    
-                            </Grid>
-                        </Grid.Column>
-                        <Grid.Column width={4}>
-                        <Card style={{position: 'relative', paddingLeft: '5px', paddingTop: '5px', paddingRight: '5px', backgroundColor: '#99c7e0'}}>
+                            <Menu.Item
+                            name='Puzzle Solver'
+                            active={showGame === false}
+                            onClick={this.handlePuzzleTabClick}
+                            >
+                            Puzzle Solver
+                            </Menu.Item>
+                        </Menu>
+                        { showGame
+                            ? <Card style={{position: 'relative', paddingLeft: '5px', paddingTop: '5px', paddingRight: '5px', backgroundColor: '#99c7e0', visibility: this.state.showGameSimulation}}>
                                 <Grid.Row>
                                     <Divider horizontal>
                                     <Header as='h2'>
@@ -821,7 +817,7 @@ export class ChessBoardLandingPage extends React.Component<IProps, IState> {
                                 <Grid.Row>
                                     <Divider horizontal>
                                         <Header as='h4'>
-                                             
+                                            
                                         </Header>
                                     </Divider>
                                     <Button style={{width:"100%"}} basic color='black' onClick={this.startGame} content='Start Game' />
@@ -830,6 +826,47 @@ export class ChessBoardLandingPage extends React.Component<IProps, IState> {
                         
                                 </Grid.Row> 
                             </Card>
+                            : <Card style={{position: 'relative', paddingLeft: '5px', paddingTop: '5px', paddingRight: '5px', backgroundColor: '#8edec3', opacity: 0.7, Visibility: showGame} }>
+                                <Grid.Row>
+                                    <Divider horizontal>
+                                        <Header as='h2'>
+                                            Puzzle Solver
+                                        </Header>
+
+                                        <Header as='h5'>
+                                            *Solves up to CheckMate in 3 Puzzles*
+                                        </Header>
+
+                                        <Header as='h5'>Puzzle FEN:</Header>
+                                        <Input style={{width: '90%'}} onChange={this.onChangeFen}></Input>
+                                        <Header as='h4'> </Header>
+                                        <Button style={{width:"100%", backgroundColor: '#ffffff'}} basic color='black' onClick={this.setUpABoard} content='Import FEN' />
+                                    </Divider>
+                                    
+                                </Grid.Row>
+                                <Grid.Row>
+                                    <Divider horizontal>
+                                        <Header as='h4'>
+                                            
+                                        </Header>
+                                    </Divider>
+                                    <Button style={{width:"100%"}} basic color='black' onClick={this.solvePuzzle} content='Play Puzzle' />
+                        
+                                </Grid.Row> 
+                            </Card>
+                        }
+
+                        
+                        </Grid.Column>
+
+                        <Grid.Column className="chess board whole grid" width={8} style={{height:totalBoardSizeStr, width: totalBoardSizeStr} } >
+                            <Grid>
+                                {pieceTiles}
+    
+                            </Grid>
+                        </Grid.Column>
+                        <Grid.Column width={4}>
+                        
 
                         </Grid.Column>
                     </Grid.Row>
