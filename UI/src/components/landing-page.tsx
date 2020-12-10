@@ -695,17 +695,21 @@ export class ChessBoardLandingPage extends React.Component<IProps, IState> {
                 <Grid stackable>
                     <Grid.Row style={{height:totalBoardSizeStr}}>
                         <Grid.Column width={4}>
-                        <Card style={{position: 'relative', paddingLeft: '5px', paddingTop: '5px', paddingRight: '5px', backgroundColor: '#fafafa'}}>
+                        <Card style={{position: 'relative', paddingLeft: '5px', paddingTop: '5px', paddingRight: '5px', backgroundColor: '#8edec3', opacity: 0.7}}>
                                 <Grid.Row>
                                     <Divider horizontal>
-                                        <Header as='h4'>
-                                            Import a Puzzle!
+                                        <Header as='h2'>
+                                            Puzzle Solver
+                                        </Header>
+
+                                        <Header as='h5'>
+                                            *Solves up to CheckMate in 3 Puzzles*
                                         </Header>
 
                                         <Header as='h5'>Puzzle FEN:</Header>
                                         <Input style={{width: '90%'}} onChange={this.onChangeFen}></Input>
                                         <Header as='h4'> </Header>
-                                        <Button style={{width:"100%"}} basic color='black' onClick={this.setUpABoard} content='Import FEN' />
+                                        <Button style={{width:"100%", backgroundColor: '#ffffff'}} basic color='black' onClick={this.setUpABoard} content='Import FEN' />
                                     </Divider>
                                     
                                 </Grid.Row>
@@ -730,9 +734,12 @@ export class ChessBoardLandingPage extends React.Component<IProps, IState> {
                             </Grid>
                         </Grid.Column>
                         <Grid.Column width={4}>
-                        <Card style={{position: 'relative', paddingLeft: '5px', paddingTop: '5px', paddingRight: '5px', backgroundColor: '#fafafa'}}>
+                        <Card style={{position: 'relative', paddingLeft: '5px', paddingTop: '5px', paddingRight: '5px', backgroundColor: '#99c7e0'}}>
                                 <Grid.Row>
                                     <Divider horizontal>
+                                    <Header as='h2'>
+                                            Game Simulation
+                                        </Header>
                                         <Header as='h4'>
                                             White Player AI Settings
                                         </Header>
