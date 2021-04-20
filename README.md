@@ -21,7 +21,7 @@ Clone the repo
 2. `pip install -r requirements.txt`
 3. Use flask:
 - Windows CMD: SET FLASK_APP= controller.py
-- Powershell: $env:FLASK_APP = controller.py
+- Powershell: $env:FLASK_APP ="controller.py"
 - Unix: export FLASK_APP=controller.py
 4. `flask run`
 
